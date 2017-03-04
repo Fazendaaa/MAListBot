@@ -1,0 +1,23 @@
+{
+  "name": "my_anime_list",
+  "version": "1.0.0",
+  "description": "Telegram bot for search My Anime List",
+  "main": "bot/mal.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fazendaaa/My_anime_list_telegram_bot.git"
+  },
+  "author": "Farm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fazendaaa/My_anime_list_telegram_bot/issues"
+  },
+  "homepage": "https://github.com/Fazendaaa/My_anime_list_telegram_bot#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "maljs": "^0.1.0"
+  }
+}
