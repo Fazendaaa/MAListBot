@@ -33,9 +33,8 @@ bot.command( 'anime', ctx => {
 
 	mal.quickSearch( anime, 'anime' )
 	.then( response => {
-	    response.anime[ 0 ].fetch( )
-	    .then( data => ctx.reply( data.mal.url+data.path ) )
-	    .catch( issue => console.log( '/anime fetch: ', issue ) )
+		const data = response.anime[ 0 ]
+		ctx.reply( data.mal.url+data.path )
     } )
     .catch( issue => console.log( '/anime quickSearch: ', issue ) )
 } )
@@ -71,24 +70,24 @@ function replyInline( data ) {
 }
 
 function inlineSearch( search ) {
-     return mal.quickSearch( search )
-    .then( response => 
-        Promise.all( response.anime.map( anime => 
-            anime.fetch()
-            .then( json => replyInline( json ) )
-            .catch( issue => console.log( 'inlineSearch fetch: ', issue ) )
-        ) )
-        .catch( issue => console.log( 'inlineSearch Promise: ', issue ) )
-    )
-    .catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
+	return mal.quickSearch( search )
+	.then( response => 
+		Promise.all( response.anime.map( anime => 
+			anime.fetch()
+			.then( json => replyInline( json ) )
+			.catch( issue => console.log( 'inlineSearch fetch: ', issue ) )
+		) )
+		.catch( issue => console.log( 'inlineSearch Promise: ', issue ) )
+	)
+	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
 bot.on( 'inline_query', ctx => {
 	const search = messageToString( ctx.inlineQuery.query ) || ''
 
-	inlineSearch( search ).then( results => {
-		ctx.answerInlineQuery( results )
-	} )
+	inlineSearch( search )
+	.then( results => ctx.answerInlineQuery( results ) )
+	.catch( issue => console.log( 'inlineSearch: ', issue ) )
 } )
 
 bot.startPolling( )
