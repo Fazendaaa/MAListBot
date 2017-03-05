@@ -71,16 +71,16 @@ function replyInline( data ) {
 }
 
 function inlineSearch( search ) {
-    return mal.quickSearch( search )
-    .then( response => {
+     return mal.quickSearch( search )
+    .then( response => 
         Promise.all( response.anime.map( anime => 
-			anime.fetch( )
-			.then( json => replyInline( json ) )
-			.catch( issue => console.log( 'inlineSearch fetch: ', issue ) )
+            anime.fetch()
+            .then( json => replyInline( json ) )
+            .catch( issue => console.log( 'inlineSearch fetch: ', issue ) )
         ) )
         .catch( issue => console.log( 'inlineSearch Promise: ', issue ) )
-	} )
-	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
+    )
+    .catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
 bot.on( 'inline_query', ctx => {
