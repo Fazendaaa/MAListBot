@@ -6,7 +6,7 @@ const bot = new Telegraf( process.env.BOT_TOKEN )
 
 const welcome = "Welcome to MAL bot.\n\nType:\n/help"
 const help = "Usage:\n\n\
-@MAListbot 'anime/character name'\n\
+@MAListbot 'anime/manga/character name'\n\
 /anime \'anime name\'\n\
 /manga \'manga name\'\n\
 /character \'character name\'\n\
@@ -73,7 +73,7 @@ bot.command( 'source', ctx => {
 function replyInline( data ) {
 	return {
 		id: data.id,
-		title: data.title,
+		title: '[' + data.type.toUpperCase() + ']' + data.title,
 		type: 'article',
 		input_message_content: {
 			message_text: data.mal.url+data.path,
@@ -96,7 +96,9 @@ function __inlineSearch( response ) {
 
 function inlineSearch( search ) {
 	return mal.quickSearch( search )
-	.then( response => __inlineSearch( response.character.concat( response.anime ) ) )
+	.then( response => 
+		__inlineSearch( response.character.concat(
+						response.anime.concat( response.manga ) ) ) )
 	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
