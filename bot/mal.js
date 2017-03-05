@@ -9,6 +9,7 @@ const help = "Usage:\n\n\
 @MAListbot 'anime name'\n\
 /anime \'anime name\'\n\
 /manga \'manga name\'\n\
+/character \'character name\'\n\
 /source -- see the code behind MAListbot\n\n\
 Any bugs or suggestions, talk to: @farm_kun"
 
@@ -20,6 +21,10 @@ bot.command( 'help', ctx => {
 	ctx.reply( help )
 })
 
+function removeCmd( ctx ) {
+	return ctx.message.text.split(' ').slice( 1 ).join(' ')
+}
+
 function messageToString( message ) {
 	return Buffer
 		  .from( message, 'ascii' )
@@ -28,8 +33,7 @@ function messageToString( message ) {
 }
 
 bot.command( 'anime', ctx => {
-	const anime = messageToString( ctx.message.text.
-								   split(' ').slice( 1 ).join(' ') )
+	const anime = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( anime, 'anime' )
 	.then( response => {
@@ -40,8 +44,7 @@ bot.command( 'anime', ctx => {
 } )
 
 bot.command( 'manga', ctx => {
-	const manga = messageToString( ctx.message.text.
-								   split(' ').slice( 1 ).join(' ') )
+	const manga = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( manga, 'manga' )
 	.then( response => {
@@ -50,6 +53,18 @@ bot.command( 'manga', ctx => {
     } )
     .catch( issue => console.log( '/manga quickSearch: ', issue ) )
 } )
+
+bot.command( 'character', ctx => {
+	const character = messageToString( removeCmd( ctx ) )
+
+	mal.quickSearch( character, 'character' )
+	.then( response => {
+		const data = response.character[ 0 ]
+		ctx.reply( data.mal.url+data.path )
+    } )
+    .catch( issue => console.log( '/character quickSearch: ', issue ) )
+} )
+
 
 bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
