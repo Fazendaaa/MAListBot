@@ -57,22 +57,21 @@ function replyInline( data ) {
 	}
 }
 
-function inlineSearch( search, callback ) {
-	const inline = [ ]
-
-	mal.quickSearch( search ).then( response => {
-	    response.anime[ 0 ].fetch( ).then( anime => {
-	    	inline.push( replyInline( anime ) )
-	    	callback( inline )
-	    } )
-    } )
+function inlineSearch( search ) {
+     return mal.quickSearch( search )
+    .then( response => 
+        Promise.all( response.anime.map( anime => 
+            anime.fetch()
+            .then( json => replyInline( json ) )
+        ))
+    );
 }
 
 bot.on( 'inline_query', ctx => {
 	const search = messageToString( ctx.inlineQuery.query ) || ''
 
-	inlineSearch( search, response => {
-		ctx.answerInlineQuery( response )
+	inlineSearch( search ).then( results => {
+		ctx.answerInlineQuery( results )
 	} )
 } )
 
