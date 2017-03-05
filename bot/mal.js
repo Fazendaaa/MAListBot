@@ -69,16 +69,19 @@ function replyInline( data ) {
 	}
 }
 
+function __inlineSearch( response ) {
+	return Promise
+	.all( response.map( data => 
+		data.fetch( )
+		.then( json => replyInline( json ) )
+		.catch( issue => console.log( '__inlineSearch fetch: ', issue ) )
+	) )
+	.catch( issue => console.log( '__inlineSearch Promise: ', issue ) )
+}
+
 function inlineSearch( search ) {
 	return mal.quickSearch( search )
-	.then( response => 
-		Promise.all( response.anime.map( anime => 
-			anime.fetch()
-			.then( json => replyInline( json ) )
-			.catch( issue => console.log( 'inlineSearch fetch: ', issue ) )
-		) )
-		.catch( issue => console.log( 'inlineSearch Promise: ', issue ) )
-	)
+	.then( response => __inlineSearch( response.anime )	)
 	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
