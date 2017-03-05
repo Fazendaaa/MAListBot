@@ -8,16 +8,15 @@ const welcome = "Welcome to MAL bot.\n\nType:\n/help"
 const help = "Usage:\n\n\
 @MAListbot 'anime name'\n\
 /anime \'anime name\'\n\
+/manga \'manga name\'\n\
 /source -- see the code behind MAListbot\n\n\
 Any bugs or suggestions, talk to: @farm_kun"
 
 bot.command( 'start', ctx => {
-	console.log( 'start', ctx.from )
 	ctx.reply( welcome )
 })
 
 bot.command( 'help', ctx => {
-	console.log( 'help', ctx.from )
 	ctx.reply( help )
 })
 
@@ -32,11 +31,25 @@ bot.command( 'anime', ctx => {
 	const anime = messageToString( ctx.message.text.
 								   split(' ').slice( 1 ).join(' ') )
 
-	mal.quickSearch( anime ).then( response => {
-	    response.anime[ 0 ].fetch( ).then( data => {
-            ctx.reply( data.mal.url+data.path )
-	    } )
+	mal.quickSearch( anime, 'anime' )
+	.then( response => {
+	    response.anime[ 0 ].fetch( )
+	    .then( data => ctx.reply( data.mal.url+data.path ) )
+	    .catch( issue => console.log( '/anime fetch: ', issue ) )
     } )
+    .catch( issue => console.log( '/anime quickSearch: ', issue ) )
+} )
+
+bot.command( 'manga', ctx => {
+	const manga = messageToString( ctx.message.text.
+								   split(' ').slice( 1 ).join(' ') )
+
+	mal.quickSearch( manga, 'manga' )
+	.then( response => {
+		const data = response.manga[ 0 ]
+		ctx.reply( data.mal.url+data.path )
+    } )
+    .catch( issue => console.log( '/manga quickSearch: ', issue ) )
 } )
 
 bot.command( 'source', ctx => {
@@ -58,13 +71,16 @@ function replyInline( data ) {
 }
 
 function inlineSearch( search ) {
-     return mal.quickSearch( search )
-    .then( response => 
+    return mal.quickSearch( search )
+    .then( response => {
         Promise.all( response.anime.map( anime => 
-            anime.fetch()
-            .then( json => replyInline( json ) )
-        ))
-    );
+			anime.fetch( )
+			.then( json => replyInline( json ) )
+			.catch( issue => console.log( 'inlineSearch fetch: ', issue ) )
+        ) )
+        .catch( issue => console.log( 'inlineSearch Promise: ', issue ) )
+	} )
+	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
 bot.on( 'inline_query', ctx => {
