@@ -73,7 +73,7 @@ bot.command( 'source', ctx => {
 function replyInline( data ) {
 	return {
 		id: data.id,
-		title: '[' + data.type.toUpperCase() + ']' + data.title,
+		title: '[' + data.type.toUpperCase() + '] ' + data.title,
 		type: 'article',
 		input_message_content: {
 			message_text: data.mal.url+data.path,
@@ -84,9 +84,9 @@ function replyInline( data ) {
 	}
 }
 
-function __inlineSearch( response ) {
+function __inlineSearch( array ) {
 	return Promise
-	.all( response.map( data => 
+	.all( array.map( data => 
 		data.fetch( )
 		.then( json => replyInline( json ) )
 		.catch( issue => console.log( '__inlineSearch fetch: ', issue ) )
@@ -96,9 +96,7 @@ function __inlineSearch( response ) {
 
 function inlineSearch( search ) {
 	return mal.quickSearch( search )
-	.then( response => 
-		__inlineSearch( response.character.concat(
-						response.anime.concat( response.manga ) ) ) )
+	.then( array =>	__inlineSearch(	array.character.concat( array.anime, array.manga ) ) )
 	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
