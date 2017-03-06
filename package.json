@@ -21,5 +21,5 @@
     "maljs": "git+https://github.com/Windsdon/maljs.git",
     "telegraf": "^3.6.7"
   },
-  "cacheDirectories": ["client/node_modules" ]
+  "cacheDirectories": ["/node_modules" ]
 }
