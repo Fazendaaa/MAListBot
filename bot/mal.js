@@ -40,7 +40,7 @@ bot.command( 'anime', ctx => {
 	const anime = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( anime, 'anime' )
-	.then( r => ctx.reply( r.anime[ 0 ].mal.url+r.anime[ 0 ].path ) )
+	.then( data => ctx.reply( data.anime[ 0 ].mal.url+data.anime[ 0 ].path ) )
     .catch( issue => console.log( '/anime quickSearch: ', issue ) )
 } )
 
@@ -48,7 +48,7 @@ bot.command( 'manga', ctx => {
 	const manga = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( manga, 'manga' )
-	.then( r => ctx.reply( r.manga[ 0 ].mal.url+r.manga[ 0 ].path ) )
+	.then( data => ctx.reply( data.manga[ 0 ].mal.url+data.manga[ 0 ].path ) )
     .catch( issue => console.log( '/manga quickSearch: ', issue ) )
 } )
 
@@ -56,7 +56,8 @@ bot.command( 'character', ctx => {
 	const character = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( character, 'character' )
-	.then( r => ctx.reply( r.character[ 0 ].mal.url+r.character[ 0 ].path ) )
+	.then( data => 
+		ctx.reply( data.character[ 0 ].mal.url+data.character[ 0 ].path ) )
     .catch( issue => console.log( '/character quickSearch: ', issue ) )
 } )
 
@@ -69,12 +70,9 @@ bot.command( 'source', ctx => {
 	Telegram standars
 */
 function replyInline( data ) {
-	// need to request a character.type in maljs
-	const type = ( undefined != data.type ) ? data.type.toUpperCase() : 'CHARACTER'
-
 	return {
 		id: data.id,
-		title: '[' + type + '] ' + data.title,
+		title: '[' + data.type + '] ' + data.title,
 		type: 'article',
 		input_message_content: {
 			message_text: data.mal.url+data.path,
