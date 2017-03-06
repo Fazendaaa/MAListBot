@@ -65,17 +65,14 @@ bot.command( 'character', ctx => {
     .catch( issue => console.log( '/character quickSearch: ', issue ) )
 } )
 
-
 bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
 })
 
 function replyInline( data ) {
-	const type = ( undefined != data.type ) ? data.type.toUpperCase() : 'CHARACTER'
-	
 	return {
 		id: data.id,
-		title: '[' + type  + '] ' + data.title,
+		title: '[' + data.type.toUpperCase() + '] ' + data.title,
 		type: 'article',
 		input_message_content: {
 			message_text: data.mal.url+data.path,
