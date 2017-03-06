@@ -25,6 +25,10 @@ function removeCmd( ctx ) {
 	return ctx.message.text.split(' ').slice( 1 ).join(' ')
 }
 
+/*	As  Telegraf  recives  all sent messages in unicode, some pieces of text may
+	become  emoji. This function intent to replace this unicode emojis for their
+	equivalent in ASCII.
+*/
 function messageToString( message ) {
 	return Buffer
 		  .from( message, 'ascii' )
@@ -36,10 +40,7 @@ bot.command( 'anime', ctx => {
 	const anime = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( anime, 'anime' )
-	.then( response => {
-		const data = response.anime[ 0 ]
-		ctx.reply( data.mal.url+data.path )
-    } )
+	.then( r => ctx.reply( r.anime[ 0 ].mal.url+r.anime[ 0 ].path ) )
     .catch( issue => console.log( '/anime quickSearch: ', issue ) )
 } )
 
@@ -47,10 +48,7 @@ bot.command( 'manga', ctx => {
 	const manga = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( manga, 'manga' )
-	.then( response => {
-		const data = response.manga[ 0 ]
-		ctx.reply( data.mal.url+data.path )
-    } )
+	.then( r => ctx.reply( r.manga[ 0 ].mal.url+r.manga[ 0 ].path ) )
     .catch( issue => console.log( '/manga quickSearch: ', issue ) )
 } )
 
@@ -58,10 +56,7 @@ bot.command( 'character', ctx => {
 	const character = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( character, 'character' )
-	.then( response => {
-		const data = response.character[ 0 ]
-		ctx.reply( data.mal.url+data.path )
-    } )
+	.then( r => ctx.reply( r.character[ 0 ].mal.url+r.character[ 0 ].path ) )
     .catch( issue => console.log( '/character quickSearch: ', issue ) )
 } )
 
@@ -69,7 +64,12 @@ bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
 })
 
+/*	Telegram  return  all  data  for  inline request as a JSON, replyInline only
+	takes  all  info  recieved  through quickSearch and 'cleans it' to put it in
+	Telegram standars
+*/
 function replyInline( data ) {
+	// need to request a character.type in maljs
 	const type = ( undefined != data.type ) ? data.type.toUpperCase() : 'CHARACTER'
 
 	return {
@@ -86,6 +86,10 @@ function replyInline( data ) {
 }
 
 function __inlineSearch( array ) {
+	/*	All  info  about  the  searched value as anime, characters or even manga
+		need  time  to  be  processed  a  new Promise must be made, to wait this
+		values to be returned, otherwise the user will recive nothing
+	*/
 	return Promise
 	.all( array.map( data => 
 		data.fetch( )
