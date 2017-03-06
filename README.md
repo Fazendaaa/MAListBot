@@ -1,6 +1,6 @@
 # My Anime List Telegram bot
 
-This is a [Telgram](https://telegram.org) search bot in [My Anime List](myanimelist.net) (MAL) database. Implemented in [Node-js](https://nodejs.org/en/) with [Telegraf](https://github.com/telegraf/telegraf) and [maljs](https://github.com/Windsdon/maljs).
+This is a [Telgram](https://telegram.org) search bot in [My Anime List](https://myanimelist.net) (MAL) database. Implemented in [Node-js](https://nodejs.org/en/) with [Telegraf](https://github.com/telegraf/telegraf) and [maljs](https://github.com/Windsdon/maljs).
 
 ## Deployment
 
