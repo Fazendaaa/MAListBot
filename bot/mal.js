@@ -72,7 +72,7 @@ bot.command( 'source', ctx => {
 function replyInline( data ) {
 	return {
 		id: data.id,
-		title: '[' + data.type + '] ' + data.title,
+		title: '[' + data.type.toUpperCase() + '] ' + data.title,
 		type: 'article',
 		input_message_content: {
 			message_text: data.mal.url+data.path,
