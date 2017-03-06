@@ -20,6 +20,5 @@
     "dotenv": "^4.0.0",
     "maljs": "git+https://github.com/Windsdon/maljs.git",
     "telegraf": "^3.6.7"
-  },
-  "cacheDirectories": ["/node_modules" ]
+  }
 }
