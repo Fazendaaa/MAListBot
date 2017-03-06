@@ -70,9 +70,11 @@ bot.command( 'source', ctx => {
 })
 
 function replyInline( data ) {
+	const type = ( undefined != data.type ) ? data.type.toUpperCase() : 'CHARACTER'
+
 	return {
 		id: data.id,
-		title: '[' + data.type.toUpperCase() + '] ' + data.title,
+		title: '[' + type + '] ' + data.title,
 		type: 'article',
 		input_message_content: {
 			message_text: data.mal.url+data.path,
