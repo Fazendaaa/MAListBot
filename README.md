@@ -1,7 +1,7 @@
 # My Anime List Telegram bot
 
 
-<img src="http://img05.deviantart.net/1d5b/i/2014/101/c/c/myanimelist___logo_by_theresonly1cryo-d7dzp0l.png" alt="mal" align="right" />
+<img src="https://raw.githubusercontent.com/Fazendaaa/My_anime_list_telegram_bot/master/apple-touch-icon-256.png" alt="mal" align="right" />
 
 This is a [Telgram](https://telegram.org) search bot in [My Anime List](https://myanimelist.net) (MAL) database.
 
@@ -33,4 +33,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
-Hughe thanks to [Windsdon](https://github.com/Windsdon) and the incredible MAL API that he made it. And the folks behind Telegraf for an awsome and well documented API. Without these kinda of people and their works it would be harder to make this bot.
+Huge thanks to [Windsdon](https://github.com/Windsdon) and the incredible MAL API that he made it. And the folks behind Telegraf for an awsome and well documented API. Without these kinda of people and their works it would be harder to make this bot.
