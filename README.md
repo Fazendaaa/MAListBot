@@ -1,18 +1,27 @@
 # My Anime List Telegram bot
 
-This is a [Telgram](https://telegram.org) search bot in [My Anime List](https://myanimelist.net) (MAL) database. Implemented in [Node-js](https://nodejs.org/en/) with [Telegraf](https://github.com/telegraf/telegraf) and [maljs](https://github.com/Windsdon/maljs).
+
+<img src="http://img05.deviantart.net/1d5b/i/2014/101/c/c/myanimelist___logo_by_theresonly1cryo-d7dzp0l.png" alt="mal" align="right" />
+
+This is a [Telgram](https://telegram.org) search bot in [My Anime List](https://myanimelist.net) (MAL) database.
 
 ## Deployment
 
 This bot is up and running in [Heroku](https://www.heroku.com/home)
 
+## Built With
+
+* [Node-js](https://nodejs.org/en/) - The running application
+* [maljs](https://github.com/Windsdon/maljs) - MAL API
+* [dotenv](https://github.com/motdotla/dotenv) - Used to read variables .env
+
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/Fazendaaa/My_anime_list_telegram_bot/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/Fazendaaa/My_anime_list_telegram_bot/blob/master/CONTRIBUTING.md) for details on code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+It is used [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Fazendaaa/My_anime_list_telegram_bot/tags). 
 
 ## Authors
 
@@ -24,3 +33,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
+Hughe thanks to [Windsdon](https://github.com/Windsdon) and the incredible MAL API that he made it. And the folks behind Telegraf for an awsome and well documented API. Without these kinda of people and their works it would be harder to make this bot.
