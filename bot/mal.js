@@ -75,9 +75,9 @@ function replyMarkdown( data ) {
 	const popularity = verifyData( data.popularity )
 
 	return `[${data.title}](${data.mal.url + data.path})
-- _Score_: *${score}*
-- _Ranked_: *${ranked}*
-- _Popularity_: *${popularity}*`
+- _Ranked_: *#${ranked}*
+- _Popularity_: *#${popularity}*
+- _Score_: *${score}*`
 }
 
 /*	Telegram  return  all  data  for  inline request as a JSON, replyInline only
