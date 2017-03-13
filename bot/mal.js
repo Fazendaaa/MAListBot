@@ -66,8 +66,7 @@ bot.command( 'source', ctx => {
 })
 
 function verifyData( data ) {
-	return ( null != data && undefined != data && NaN != data ) ?
-			'Not avaliable' : `${data}`
+	return ( null != data && undefined != data && !isNaN( data ) ) ? data : 'Not avaliable'
 }
 
 function replyMarkdown( data ) {
