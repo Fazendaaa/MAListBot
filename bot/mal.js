@@ -65,6 +65,13 @@ bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
 })
 
+function replyMarkdown( data ) {
+	return `[${data.title}](${data.mal.url + data.path})
+- _Score_: *${data.score}*
+- _Ranked_: *${data.ranked}*
+- _Popularity_: *${data.popularity}*`
+}
+
 /*	Telegram  return  all  data  for  inline request as a JSON, replyInline only
 	takes  all  info  recieved  through quickSearch and 'cleans it' to put it in
 	Telegram standars
@@ -75,8 +82,8 @@ function replyInline( data ) {
 		title: '[' + data.type.toUpperCase() + '] ' + data.title,
 		type: 'article',
 		input_message_content: {
-			message_text: data.mal.url+data.path,
-			parse_mode: 'HTML'
+			message_text: replyMarkdown( data ),
+			parse_mode: 'Markdown'
 		},
 		description: data.description,
 		thumb_url: data.cover

@@ -1,6 +1,5 @@
 # My Anime List Telegram bot
 
-
 <img src="https://raw.githubusercontent.com/Fazendaaa/My_anime_list_telegram_bot/master/apple-touch-icon-256.png" alt="mal" align="right" />
 
 This is a [Telgram](https://telegram.org) search bot in [My Anime List](https://myanimelist.net) (MAL) database.
