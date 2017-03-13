@@ -65,11 +65,20 @@ bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
 })
 
+function verifyData( data ) {
+	return ( null != data && undefined != data && NaN != data ) ?
+			'Not avaliable' : `${data}`
+}
+
 function replyMarkdown( data ) {
+	const score = verifyData( data.score )
+	const ranked = verifyData( data.ranked )
+	const popularity = verifyData( data.popularity )
+
 	return `[${data.title}](${data.mal.url + data.path})
-- _Score_: *${data.score}*
-- _Ranked_: *${data.ranked}*
-- _Popularity_: *${data.popularity}*`
+- _Score_: *${score}*
+- _Ranked_: *${ranked}*
+- _Popularity_: *${popularity}*`
 }
 
 /*	Telegram  return  all  data  for  inline request as a JSON, replyInline only
