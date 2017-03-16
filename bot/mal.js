@@ -56,7 +56,7 @@ bot.command( 'character', ctx => {
 	const character = messageToString( removeCmd( ctx ) )
 
 	mal.quickSearch( character, 'character' )
-	.then( data => 
+	.then( data =>
 		ctx.reply( data.character[ 0 ].mal.url+data.character[ 0 ].path ) )
     .catch( issue => console.log( '/character quickSearch: ', issue ) )
 } )
@@ -73,6 +73,8 @@ function replyMarkdown( data ) {
 	const score = verifyData( data.score )
 	const ranked = verifyData( data.ranked )
 	const popularity = verifyData( data.popularity )
+
+	console.log( data )
 
 	return `[${data.title}](${data.mal.url + data.path})
 - _Ranked_: *#${ranked}*
@@ -104,7 +106,7 @@ function __inlineSearch( array ) {
 		values to be returned, otherwise the user will recive nothing
 	*/
 	return Promise
-	.all( array.map( data => 
+	.all( array.map( data =>
 		data.fetch( )
 		.then( json => replyInline( json ) )
 		.catch( issue => console.log( '__inlineSearch fetch: ', issue ) )
