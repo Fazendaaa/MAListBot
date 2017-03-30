@@ -4,6 +4,8 @@ const Telegraf = require( 'telegraf' )
 const mal = require( 'maljs' )
 const bot = new Telegraf( process.env.BOT_TOKEN )
 
+bot.use( Telegraf.log() )
+
 const welcome = "Welcome to MAL bot.\n\nType:\n/help"
 const help = "Usage:\n\n\
 @MAListbot 'anime/manga/character name'\n\
@@ -11,7 +13,9 @@ const help = "Usage:\n\n\
 /manga \'manga name\'\n\
 /character \'character name\'\n\
 /source -- see the code behind MAListbot\n\n\
-Any bugs or suggestions, talk to: @farm_kun"
+Any bugs or suggestions, talk to: @farmy"
+const defaultResponse = 'Please, feel free to search MAL. This query\
+will reply any given aspect of the search as Characters, Animes and Mangas.'
 
 bot.command( 'start', ctx => {
 	ctx.reply( welcome )
@@ -34,6 +38,7 @@ function messageToString( message ) {
 		  .from( message, 'ascii' )
 		  .toString( 'ascii' )
 		  .replace( /(?:=\(|:0|:o|: o|: 0)/, ': o' )
+		  .replace( '-', ' ' )
 }
 
 bot.command( 'anime', ctx => {
@@ -65,20 +70,19 @@ bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
 })
 
-function verifyData( data ) {
-	return ( null != data && undefined != data && !isNaN( data ) ) ? data : 'Not avaliable'
+function verifyData( data, unit ) {
+	return ( null != data && undefined != data && !isNaN( data ) ) ?
+		   `${unit}${data}` : 'Not avaliable'
 }
 
 function replyMarkdown( data ) {
-	const score = verifyData( data.score )
-	const ranked = verifyData( data.ranked )
-	const popularity = verifyData( data.popularity )
-
-	console.log( data )
+	const score = verifyData( data.score, '' )
+	const ranked = verifyData( data.ranked, '#' )
+	const popularity = verifyData( data.popularity, '#' )
 
 	return `[${data.title}](${data.mal.url + data.path})
-- _Ranked_: *#${ranked}*
-- _Popularity_: *#${popularity}*
+- _Ranked_: *${ranked}*
+- _Popularity_: *${popularity}*
 - _Score_: *${score}*`
 }
 
@@ -107,18 +111,32 @@ function __inlineSearch( array ) {
 	*/
 	return Promise
 	.all( array.map( data =>
-		data.fetch( )
-		.then( json => replyInline( json ) )
-		.catch( issue => console.log( '__inlineSearch fetch: ', issue ) )
+		   data.fetch( )
+			   .then( json => replyInline( json ) )
+			   .catch( issue => console.log( '__inlineSearch fetch: ', issue ) )
 	) )
 	.catch( issue => console.log( '__inlineSearch Promise: ', issue ) )
 }
 
 function inlineSearch( search ) {
-	return mal.quickSearch( search )
-	.then( array =>	__inlineSearch(	array.character.concat(
-									array.anime.concat( array.manga ) ) ) )
-	.catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
+	if( '' == search )
+		return Promise.all( [ {
+									id: '0',
+									title: 'Search anything, Onii-chan',
+									type: 'article',
+									input_message_content: {
+										message_text: defaultResponse,
+										parse_mode: 'Markdown'
+									},
+									description: defaultResponse,
+									thumb_url: 'http://bit.ly/2nNA6D3',
+							  } ] )
+
+	else
+		return mal.quickSearch( search )
+				  .then( array =>	__inlineSearch(	array.character.concat(
+													array.anime.concat( array.manga ) ) ) )
+				  .catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
 }
 
 bot.on( 'inline_query', ctx => {
