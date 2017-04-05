@@ -92,12 +92,13 @@ bot.action( /.+/, ( ctx ) => {
 	return ctx.answerCallbackQuery( ctx.match[ 0 ], undefined, true )  
 })
 
-function replyButton( plot ) {
+function replyButton( description ) {
 	return Telegraf.Extra
 				   .markdown( )
 				   .markup( ( m ) =>
 				      m.inlineKeyboard( [
-					      m.callbackButton( 'Plot', plot.substring( 0, 40 ) )
+					      m.callbackButton( 'Description',
+						  description.substring( 0, 40 ) )
 				   ] )
 	).reply_markup
 }
