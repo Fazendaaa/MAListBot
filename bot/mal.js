@@ -119,7 +119,7 @@ function replyInline( data ) {
 			parse_mode: 'Markdown',
 			disable_web_page_preview: false
 		},
-		reply_markup: replyButton( data.description ),
+		//reply_markup: replyButton( data.description ),
 		description: description,
 		thumb_url: data.cover
 	}
