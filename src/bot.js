@@ -149,7 +149,7 @@ function inlineSearch( search ) {
 										parse_mode: 'Markdown'
 									},
 									description: defaultResponse,
-									thumb_url: 'http://bit.ly/2nNA6D3',
+									thumb_url: 'http://bit.ly/2oj2nSy',
 							  } ] )
 
 	else
