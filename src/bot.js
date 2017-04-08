@@ -69,20 +69,19 @@ bot.command( 'source', ctx => {
 	ctx.reply( 'https://github.com/Fazendaaa/My_anime_list_telegram_bot' )
 })
 
-function verifyData( data, unit ) {
-	return ( null != data && undefined != data && isNaN( data ) ) ?
-		   `${unit}${data}` : 'Not avaliable'
+function verifyData( data ) {
+	return ( null != data && undefined != data ) ? `$${data}` : 'Not avaliable'
 }
 
 function verifyDataMd( pre, data, unit ) {
-	return ( null != data && undefined != data ) ?
+	return ( null != data && undefined != data && !isNaN( data ) ) ?
 		   `- _${pre}_: *${unit}${data}*\n` : ''
 }
 
 function replyMarkdown( data ) {
 	const score = verifyDataMd( 'Score', data.score, '' )
 	const ranked = verifyDataMd( 'Ranked', data.ranked, '#' )
-	const popularity = verifyDataMd( 'Popularity	', data.popularity, '#' )
+	const popularity = verifyDataMd( 'Popularity', data.popularity, '#' )
 
 	return `[\u200B](${data.cover})[${data.title}](${data.mal.url + data.path})
 ${ranked}${popularity}${score}`
@@ -108,7 +107,7 @@ function replyButton( description ) {
 	Telegram standars
 */
 function replyInline( data ) {
-	const description = verifyData( data.description, '' )
+	const description = verifyData( data.description )
 
 	return {
 		id: data.id,

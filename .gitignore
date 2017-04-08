@@ -1,3 +1,4 @@
 /node_modules
 /*.env
 /bot_cmd.txt
+.vscode/
