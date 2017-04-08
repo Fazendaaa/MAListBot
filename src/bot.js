@@ -70,7 +70,7 @@ bot.command( 'source', ctx => {
 })
 
 function verifyData( data ) {
-	return ( null != data && undefined != data ) ? `$${data}` : 'Not avaliable'
+	return ( null != data && undefined != data ) ? `${data}` : 'Not avaliable'
 }
 
 function verifyDataMd( pre, data, unit ) {
