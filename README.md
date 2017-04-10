@@ -11,7 +11,8 @@ This bot is up and running in [Heroku](https://www.heroku.com/home)
 ## Built With
 
 * [Node-js](https://nodejs.org/en/) - The running application
-* [maljs](https://github.com/Windsdon/maljs) - MAL API
+* [maljs](https://github.com/Windsdon/maljs) - MAL wrapper for searches
+* [Popura](https://github.com/lubien/popura) - MAL wrapper for buttons
 * [dotenv](https://github.com/motdotla/dotenv) - Used to read variables .env
 
 ## Contributing
@@ -32,4 +33,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
-Huge thanks to [Windsdon](https://github.com/Windsdon) and the incredible MAL API that he made it. And the folks behind Telegraf for an awsome and well documented API. Without these kinda of people and their works it would be harder to make this bot.
+Huge thanks to [Windsdon](https://github.com/Windsdon) and the incredible MAL API that he made it. All the support that [Lubien](https://github.com/lubien) gave in Github and talking to me at Telegram, helped me solved a lot of trouble that I was having. And the folks behind Telegraf for an awsome and well documented API. Without these kinda of people and their works it would be harder to make this bot.

@@ -1,8 +1,8 @@
 require( 'dotenv' ).config( { path: '../.env' } )
-
 const Telegraf = require( 'telegraf' )
 const mal = require( 'maljs' )
 const bot = new Telegraf( process.env.BOT_TOKEN )
+const popura = require( 'popura' )( process.env.MAL_USERNAME, process.env.MAL_PASSWORD )
 
 bot.use( Telegraf.log() )
 
@@ -87,19 +87,150 @@ function replyMarkdown( data ) {
 ${ranked}${popularity}${score}`
 }
 
+function replyCallback( string ) {
+	const lastIndex = string.lastIndexOf(" ")
+	const newString = string.substring( 0, lastIndex )
+	
+	return `${newString}...`
+}
+
+function verifyObject( obj ) {
+	return ( null != obj && undefined != obj && isNaN( obj ) ) ?
+			 obj.join("\n") : 'Not Available'
+}
+
+function answerCallbackAnime( button, title ) {
+	return popura.searchAnimes( title )
+				 .then( anime => {
+					 switch( button ) {
+						 /*	d == DESCRIPTION	*/
+						 case 'd':
+							 return replyCallback(
+								    anime[ 0 ].synopsis.substring( 0, 196 ) )
+							 break
+						 /*	s == STATUS	*/
+						 case 's':
+							 return anime[ 0 ].status
+							 break
+						 /*	e == EPISODES	*/
+						 case 'e':
+							 return anime[ 0 ].episodes
+							 break
+						 /*	sy == SYNONYMS	*/
+						 case 'sy':
+						 	 return verifyObject( anime[ 0 ].synonyms )
+						 	 break
+						 default:
+							 return 'Not Available'
+					 }
+				 } )
+				 .catch( issue => {
+					 console.log( "answerCallbackAnime: ", issue )
+					 return 'Not Available'
+				 })
+}
+
+function answerCallbackManga( button, title ) {
+	return popura.searchMangas( title )
+				 .then( manga => {
+					 switch( button ) {
+						 /*	d == DESCRIPTION	*/
+						 case 'd':
+							 return replyCallback(
+								    manga[ 0 ].synopsis.substring( 0, 196 ) )
+							 break
+						 /*	s == STATUS	*/
+						 case 's':
+							 return manga[ 0 ].status
+							 break
+						 /*	v == VOLUMES	*/
+						 case 'r':
+							 return `Volumes: ${manga[ 0 ].volumes}\nChapters: ${manga[ 0 ].chapters}`
+							 break
+						 default:
+							 return 'Not Available'
+					 }
+				 } )
+				 .catch( issue => {
+					 console.log( "answerCallbackManga: ", issue )
+					 return 'Not Available'
+				 })
+}
+
+function answerCallbackCharacter( title ) {
+	return mal.quickSearch( title, 'character' )
+			  .then( c => {
+				  return c[ 0 ].fetch( )
+				  			   .then( json => {
+									 return replyCallback(
+										  json.description.substring( 0, 196 ) )
+								 } )
+			  } )
+}
+
 bot.action( /.+/, ( ctx ) => {
-	return ctx.answerCallbackQuery( ctx.match[ 0 ], undefined, true )  
+	const result = ctx.match[ 0 ].split( "/" )
+
+	switch( result[ 0 ] ) {
+		/*	a == ANIME	*/
+		case 'a':
+			return answerCallbackAnime( result[ 1 ], result[ 2 ] )
+			.then( data => ctx.answerCallbackQuery( data, undefined, true ) )
+			break
+		/*	m == MANGA	*/
+		case 'm':
+			return answerCallbackManga( result[ 1 ], result[ 2 ] )
+			.then( data => ctx.answerCallbackQuery( data, undefined, true ) )
+			break
+		/*	c == CHARACTER	*/
+		case 'm':
+			return answerCallbackCharacter( result[ 1 ] )
+			.then( data => ctx.answerCallbackQuery( data, undefined, true ) )
+			break
+		default:
+			return ctx.answerCallbackQuery( 'Not Available', undefined, true )
+	}
 })
 
-function replyButton( description ) {
-	return Telegraf.Extra
+function replyButton( type, title ) {
+	switch( type ) {
+		case "anime":
+			return Telegraf.Extra
 				   .markdown( )
-				   .markup( ( m ) =>
-				      m.inlineKeyboard( [
+				   .markup( ( m ) => m.inlineKeyboard( [
 					      m.callbackButton( 'Description',
-						  description.substring( 0, 40 ) )
-				   ] )
-	).reply_markup
+						  `a/d/${title}`.substring( 0, 40 ) ),
+						  m.callbackButton( 'Status',
+						  `a/s/${title}`.substring( 0, 40 ) ),
+						  m.callbackButton( 'Episodes',
+						  `a/e/${title}`.substring( 0, 40 ) ),
+						  m.callbackButton( 'Synonyms',
+						  `a/sy/${title}`.substring( 0, 40 ) )
+				   	  ] ) ).reply_markup
+			break
+		case "manga":
+			return Telegraf.Extra
+				   .markdown( )
+				   .markup( ( m ) => m.inlineKeyboard( [
+					      m.callbackButton( 'Description',
+						  `m/d/${title}`.substring( 0, 40 ) ),
+						  m.callbackButton( 'Status',
+						  `m/s/${title}`.substring( 0, 40 ) ),
+						  m.callbackButton( 'Releases',
+						  `m/r/${title}`.substring( 0, 40 ) )
+				   	  ] ) ).reply_markup
+			break
+		case "character":
+			return Telegraf.Extra
+				   .markdown( )
+				   .markup( ( m ) => m.inlineKeyboard( [
+					      m.callbackButton( 'Description',
+						  `c/${title}`.substring( 0, 40 ) )
+				   	  ] ) ).reply_markup
+			break
+		default:
+			return null
+	}
 }
 
 /*	Telegram  return  all  data  for  inline request as a JSON, replyInline only
@@ -118,7 +249,7 @@ function replyInline( data ) {
 			parse_mode: 'Markdown',
 			disable_web_page_preview: false
 		},
-		//reply_markup: replyButton( data.description ),
+		reply_markup: replyButton( data.type, data.title ),
 		description: description,
 		thumb_url: data.cover
 	}

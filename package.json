@@ -19,6 +19,7 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "maljs": "git+https://github.com/Windsdon/maljs.git",
+    "popura": "1.2.5",
     "telegraf": "^3.6.7"
   }
 }
