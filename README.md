@@ -34,3 +34,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 ## Acknowledgments
 
 Huge thanks to [Windsdon](https://github.com/Windsdon) and the incredible MAL API that he made it. All the support that [Lubien](https://github.com/lubien) gave in Github and talking to me at Telegram, helped me solved a lot of trouble that I was having. And the folks behind Telegraf for an awsome and well documented API. Without these kinda of people and their works it would be harder to make this bot.
+
+## Next Updates
+
+* Add a watchlist button: this will allow the user to save the anime reference.
