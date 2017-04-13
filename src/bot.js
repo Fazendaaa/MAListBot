@@ -1,6 +1,8 @@
 require( 'dotenv' ).config( { path: '../.env' } )
+
 const Telegraf = require( 'telegraf' )
 const mal = require( 'maljs' )
+const moment = require( 'moment' )
 const bot = new Telegraf( process.env.BOT_TOKEN )
 const popura = require( 'popura' )( process.env.MAL_USERNAME, process.env.MAL_PASSWORD )
 
@@ -108,16 +110,19 @@ function answerCallbackAnime( button, title ) {
 							 return replyCallback(
 								    anime[ 0 ].synopsis.substring( 0, 196 ) )
 							 break
-						 /*	s == STATUS	*/
-						 case 's':
-							 return anime[ 0 ].status
-							 break
 						 /*	e == EPISODES	*/
+						 /*
+						 start_date: '2003-10-04',
+  						end_date: '2004-10-02'	
+						 */
 						 case 'e':
-							 return anime[ 0 ].episodes
+							 return `Status: ${anime[ 0 ].status}
+Episodes: ${anime[ 0 ].episodes}
+Start date: ${moment( anime[ 0 ].start_date ).format( 'MMMM Do YYYY' )}
+End date: ${moment( anime[ 0 ].end_date ).format( 'MMMM Do YYYY' )}`
 							 break
-						 /*	sy == SYNONYMS	*/
-						 case 'sy':
+						 /*	s == SYNONYMS	*/
+						 case 's':
 						 	 return verifyObject( anime[ 0 ].synonyms )
 						 	 break
 						 default:
@@ -200,12 +205,10 @@ function replyButton( type, title ) {
 				   .markup( ( m ) => m.inlineKeyboard( [
 					      m.callbackButton( 'Description',
 						  `a/d/${title}`.substring( 0, 40 ) ),
-						  m.callbackButton( 'Status',
-						  `a/s/${title}`.substring( 0, 40 ) ),
 						  m.callbackButton( 'Episodes',
 						  `a/e/${title}`.substring( 0, 40 ) ),
 						  m.callbackButton( 'Synonyms',
-						  `a/sy/${title}`.substring( 0, 40 ) )
+						  `a/s/${title}`.substring( 0, 40 ) )
 				   	  ] ) ).reply_markup
 			break
 		case "manga":
