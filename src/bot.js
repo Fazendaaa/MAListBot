@@ -1,10 +1,13 @@
 require( 'dotenv' ).config( { path: '../.env' } )
 
-const Telegraf = require( 'telegraf' )
+const utils = require( './utils' )
 const mal = require( 'maljs' )
 const moment = require( 'moment' )
-const bot = new Telegraf( process.env.BOT_TOKEN )
 const popura = require( 'popura' )( process.env.MAL_USERNAME, process.env.MAL_PASSWORD )
+const Telegraf = require( 'telegraf' )
+const bot = new Telegraf( process.env.BOT_TOKEN )
+const HorribleSubsAPI = require('horriblesubs-api');
+const HS = new HorribleSubsAPI();
 
 bot.use( Telegraf.log() )
 
@@ -18,6 +21,17 @@ const help = "Usage:\n\n\
 Any bugs or suggestions, talk to: @farmy"
 const defaultResponse = 'Please, feel free to search MAL.'
 
+function removeCmd( ctx ) {
+	return ctx.message.text.split(' ').slice( 1 ).join(' ')
+}
+
+function messageToString( message ) {
+    return Buffer
+            .from( message, 'ascii' )
+            .toString( 'ascii' )
+            .replace( /(?:=\(|:0|:o|: o|: 0)/, ': o' )
+}
+
 bot.command( 'start', ctx => {
 	ctx.reply( welcome )
 })
@@ -25,22 +39,6 @@ bot.command( 'start', ctx => {
 bot.command( 'help', ctx => {
 	ctx.reply( help )
 })
-
-function removeCmd( ctx ) {
-	return ctx.message.text.split(' ').slice( 1 ).join(' ')
-}
-
-/*	As  Telegraf  recives  all sent messages in unicode, some pieces of text may
-	become  emoji. This function intent to replace this unicode emojis for their
-	equivalent in ASCII.
-*/
-function messageToString( message ) {
-	return Buffer
-		  .from( message, 'ascii' )
-		  .toString( 'ascii' )
-		  .replace( /(?:=\(|:0|:o|: o|: 0)/, ': o' )
-		  .replace( '-', ' ' )
-}
 
 bot.command( 'anime', ctx => {
 	const anime = messageToString( removeCmd( ctx ) )
@@ -101,6 +99,57 @@ function verifyObject( obj ) {
 			 obj.join("\n") : 'Not Available'
 }
 
+
+/*
+{ '1': 
+      { '1': 
+         { '480p': 
+            { url: 'magnet:?xt=urn:btih:XKA3DE3SUUZU346QXC6VRX5G7WB6EXY2&tr=udp://tracker.coppersurfer.tk:6969/announce&tr=udp://tracker.internetwarriors.net:1337/announce&tr=udp://tracker.leechers-paradise.org:6969/announce&tr=http://tracker.internetwarriors.net:1337/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=http://tracker.opentrackr.org:1337/announce&tr=udp://tracker.zer0day.to:1337/announce&tr=udp://tracker.pirateparty.gr:6969/announce&tr=http://explodie.org:6969/announce&tr=http://p4p.arenabg.com:1337/announce&tr=http://mgtracker.org:6969/announce',
+              seeds: 0,
+              peers: 0,
+              provider: 'HorribleSubs' },
+           '720p': 
+            { url: 'magnet:?xt=urn:btih:T7B35NITUXKVCBU72SU6AC2HFAJWID6S&tr=udp://tracker.coppersurfer.tk:6969/announce&tr=udp://tracker.internetwarriors.net:1337/announce&tr=udp://tracker.leechers-paradise.org:6969/announce&tr=http://tracker.internetwarriors.net:1337/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=http://tracker.opentrackr.org:1337/announce&tr=udp://tracker.zer0day.to:1337/announce&tr=udp://tracker.pirateparty.gr:6969/announce&tr=http://explodie.org:6969/announce&tr=http://p4p.arenabg.com:1337/announce&tr=http://mgtracker.org:6969/announce',
+              seeds: 0,
+              peers: 0,
+              provider: 'HorribleSubs' },
+           '1080p': 
+            { url: 'magnet:?xt=urn:btih:QD4NWYKB2NOS4JIINVALZIY3OAC6A6W7&tr=udp://tracker.coppersurfer.tk:6969/announce&tr=udp://tracker.internetwarriors.net:1337/announce&tr=udp://tracker.leechers-paradise.org:6969/announce&tr=http://tracker.internetwarriors.net:1337/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=http://tracker.opentrackr.org:1337/announce&tr=udp://tracker.zer0day.to:1337/announce&tr=udp://tracker.pirateparty.gr:6969/announce&tr=http://explodie.org:6969/announce&tr=http://p4p.arenabg.com:1337/announce&tr=http://mgtracker.org:6969/announce',
+              seeds: 0,
+              peers: 0,
+              provider: 'HorribleSubs' } },
+
+*/
+
+function replyEpi(epi) {
+	console.log(epi, '\n\n\n')
+	//return epi.map(e => `Episode ${e}:\n${e.map()}`)
+}
+
+function replySeason(anime) {
+	console.log(anime)
+	//console.log(anime.episodes.map(e => e[0]))
+	//return anime.episodes.map(season => `Season ${season}:\n${season.map(e => replyEpi(e))}`)
+}
+
+function torrent(string) {
+	return HS.getAllAnime()
+			 .then(res => {
+				 for(i in res) {
+				 	if(res[i].title.toLowerCase() == string.toLowerCase()) {
+						return HS.getAnimeData(res[i])
+								 .then(res => Promise.resolve(require('util').inspect(res, { depth: null }))
+								 					 .then(data => replySeason(data)))
+								 .catch(err => console.log( '[ERROR] torrent - for: ',err))
+					 	 break
+				  	 }
+				 }
+
+				return 'Not Availiable in Horrible Sub'
+			})
+			.catch(err => console.log( '[ERROR] torrent: ',err))
+}
+
 function answerCallbackAnime( button, title ) {
 	return popura.searchAnimes( title )
 				 .then( anime => {
@@ -111,10 +160,6 @@ function answerCallbackAnime( button, title ) {
 								    anime[ 0 ].synopsis.substring( 0, 196 ) )
 							 break
 						 /*	e == EPISODES	*/
-						 /*
-						 start_date: '2003-10-04',
-  						end_date: '2004-10-02'	
-						 */
 						 case 'e':
 							 return `Status: ${anime[ 0 ].status}
 Episodes: ${anime[ 0 ].episodes}
@@ -125,6 +170,10 @@ End date: ${moment( anime[ 0 ].end_date ).format( 'MMMM Do YYYY' )}`
 						 case 's':
 						 	 return verifyObject( anime[ 0 ].synonyms )
 						 	 break
+						/*	t == TORRENT	*/
+						case 't':
+							return torrent(title)
+							break
 						 default:
 							 return 'Not Available'
 					 }
@@ -173,7 +222,7 @@ function answerCallbackCharacter( title ) {
 			  } )
 }
 
-bot.action( /.+/, ( ctx ) => {
+bot.action( /.+/, ctx => {
 	const result = ctx.match[ 0 ].split( "/" )
 
 	switch( result[ 0 ] ) {
@@ -181,16 +230,19 @@ bot.action( /.+/, ( ctx ) => {
 		case 'a':
 			return answerCallbackAnime( result[ 1 ], result[ 2 ] )
 			.then( data => ctx.answerCallbackQuery( data, undefined, true ) )
+			.catch(error => console.log('[ERROR] bot.action anime: ', error))
 			break
 		/*	m == MANGA	*/
 		case 'm':
 			return answerCallbackManga( result[ 1 ], result[ 2 ] )
 			.then( data => ctx.answerCallbackQuery( data, undefined, true ) )
+			.catch(error => console.log('[ERROR] bot.action manga: ', error))
 			break
 		/*	c == CHARACTER	*/
-		case 'm':
+		case 'c':
 			return answerCallbackCharacter( result[ 1 ] )
 			.then( data => ctx.answerCallbackQuery( data, undefined, true ) )
+			.catch(error => console.log('[ERROR] bot.action character: ', error))
 			break
 		default:
 			return ctx.answerCallbackQuery( 'Not Available', undefined, true )
@@ -208,7 +260,9 @@ function replyButton( type, title ) {
 						  m.callbackButton( 'Episodes',
 						  `a/e/${title}`.substring( 0, 40 ) ),
 						  m.callbackButton( 'Synonyms',
-						  `a/s/${title}`.substring( 0, 40 ) )
+						  `a/s/${title}`.substring( 0, 40 ) )//,
+						  //m.callbackButton( 'Torrent',
+						  //`a/t/${title}`.substring( 0, 40 ) )
 				   	  ] ) ).reply_markup
 			break
 		case "manga":
@@ -290,7 +344,20 @@ function inlineSearch( search ) {
 		return mal.quickSearch( search )
 				  .then( array =>	__inlineSearch(	array.character.concat(
 													array.anime.concat( array.manga ) ) ) )
-				  .catch( issue => console.log( 'inlineSearch quickSearch: ', issue ) )
+				  .catch( issue => {
+					  console.log( 'inlineSearch quickSearch: ', issue )
+					   return [ {
+									id: '0',
+									title: 'Not Found',
+									type: 'article',
+									input_message_content: {
+										message_text: "I couldn't find anything",
+										parse_mode: 'Markdown'
+									},
+									description: "I couldn't find anything",
+									thumb_url: 'http://bit.ly/2oj2nSy',
+							  } ]
+					})
 }
 
 bot.on( 'inline_query', ctx => {

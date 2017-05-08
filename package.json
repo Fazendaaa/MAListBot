@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Fazendaaa/My_anime_list_telegram_bot#readme",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "horriblesubs-api": "1.0.6",
     "maljs": "git+https://github.com/Windsdon/maljs.git",
     "moment": "2.18.1",
     "popura": "1.2.5",
